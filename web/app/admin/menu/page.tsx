@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import AddCategoryDialog from "@/components/admin/components/AddCategoryDialog";
+import FoodSection from "@/components/admin/components/foodSection";
 
 type CategoryType = {
   categoryName: string;
@@ -32,17 +33,17 @@ const Page = () => {
 
   return (
     <div className="h-screen w-full bg-secondary">
-      <div className="w-full rounded-xl p-6 space-y-4 bg-white">
+      <div className="w-full rounded-xl m-4 p-6 space-y-4 bg-white">
         <h3 className="text-xl font-semibold">Dishes category</h3>
 
         <div className="flex gap-4">
           {loading ? (
             <>
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-8 w-40" />
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-40" />
             </>
           ) : (
             categories.map((category) => {
@@ -61,6 +62,7 @@ const Page = () => {
           <AddCategoryDialog getCategories={getCategories} />
         </div>
       </div>
+      <FoodSection></FoodSection>
     </div>
   );
 };

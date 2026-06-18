@@ -2,7 +2,7 @@ import { Context } from "hono";
 import { FoodCategoryModel } from "../model/food-category.model.js";
 import { connectDb } from "../util/connectDb.js";
 
-//CREATE FOOD CONTROLLER FUNCTION
+//CREATE FOOD CATEGORY CONTROLLER FUNCTION
 export const createFoodCategory = async (c: Context) => {
   await connectDb();
   const input = await c.req.json();
@@ -16,7 +16,7 @@ export const createFoodCategory = async (c: Context) => {
   });
 };
 
-// GET FOOD CONTROLLER FUNCTION
+// GET FOOD CATEGORY CONTROLLER FUNCTION
 export const getFoodCategory = async (c: Context) => {
   await connectDb();
   const foodCategories = await FoodCategoryModel.find();
@@ -24,7 +24,7 @@ export const getFoodCategory = async (c: Context) => {
   return c.json({ message: "Category av", foodCategories });
 };
 
-// UPDATE FOOD CONTROLLER FUNCTION
+// UPDATE FOOD CATEGORY CONTROLLER FUNCTION
 export const updateFoodCategory = async (c: Context) => {
   await connectDb();
   const id = c.req.param("id");
@@ -40,7 +40,7 @@ export const updateFoodCategory = async (c: Context) => {
   });
 };
 
-//DELETE FOOD CONTROLLER FUNCTION
+//DELETE FOOD CATEGORY CONTROLLER FUNCTION
 export const deleteFoodCategory = async (c: Context) => {
   await connectDb();
   const id = c.req.param("id");
