@@ -19,7 +19,7 @@ const AddCategoryDialog = ({
 }) => {
   const [value, setValue] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
