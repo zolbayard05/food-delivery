@@ -1,37 +1,33 @@
 "use client";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { CreateFoodDialog } from "./CreateFoodDialog";
 import FoodCard from "./FoodCard";
 
-type FoodType = {
-  foodname: string;
-  _id: string;
-  price: number;
-  image: string;
-  ingredients: string;
-};
-
-const FoodSection = () => {
-  const [foods, setFoods] = useState<FoodType[]>([]);
-
-  const getFood = async () => {
-    const response = await axios.get("http://localhost:3000/food");
-
-    console.log("working...", response);
-
-    setFoods(response.data.foods);
-  };
-
-  useEffect(() => {
-    getFood();
-  }, []);
+const FoodSection = ({
+  categoryName,
+  foods,
+  categoryId,
+  getFoods,
+}: {
+  categoryName: string;
+  foods: any;
+  categoryId: string;
+  getFoods: () => void;
+}) => {
+  const filteredFoods = foods.filter(
+    (food: any) => food.category === categoryId,
+  );
 
   return (
     <div className="w-full rounded-xl m-4 p-6 space-y-4 bg-white">
-      <h3 className="text-xl font-semibold">Main dishes</h3>
+      <h3 className="text-xl font-semibold">{categoryName}</h3>
+
+      <CreateFoodDialog
+        categoryId={categoryId}
+        getFoods={getFoods}
+      ></CreateFoodDialog>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {foods.map((food) => (
+        {filteredFoods.map((food) => (
           <FoodCard key={food._id} food={food} />
         ))}
       </div>

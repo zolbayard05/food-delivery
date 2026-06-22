@@ -13,8 +13,17 @@ type CategoryType = {
   _id: string;
 };
 
+type FoodType = {
+  foodname: string;
+  _id: string;
+  price: number;
+  image: string;
+  ingredients: string;
+};
+
 const Page = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [foods, setFoods] = useState<FoodType[]>([]);
   const [loading, setLoading] = useState(false);
 
   const getCategories = async () => {
@@ -26,6 +35,18 @@ const Page = () => {
     setCategories(response.data.foodCategories);
     setLoading(false);
   };
+
+  const getFood = async () => {
+    const response = await axios.get("http://localhost:3000/food");
+
+    console.log("working...", response);
+
+    setFoods(response.data.foods);
+  };
+
+  useEffect(() => {
+    getFood();
+  }, []);
 
   useEffect(() => {
     getCategories();
@@ -62,7 +83,16 @@ const Page = () => {
           <AddCategoryDialog getCategories={getCategories} />
         </div>
       </div>
-      <FoodSection></FoodSection>
+      {categories?.map((category) => {
+        return (
+          <FoodSection
+            getFoods={getFood}
+            foods={foods}
+            categoryName={category.categoryName}
+            categoryId={category._id}
+          ></FoodSection>
+        );
+      })}
     </div>
   );
 };
