@@ -12,7 +12,7 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-const AddCategoryDialog = ({
+export const AddCategoryDialog = ({
   getCategories,
 }: {
   getCategories: () => void;
@@ -51,4 +51,3 @@ const AddCategoryDialog = ({
     </Dialog>
   );
 };
-export default AddCategoryDialog;

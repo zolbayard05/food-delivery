@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import axios from "axios";
+import { EditFoodDialog } from "./EditFoodDialog";
 
 export type FoodType = {
   foodname: string;
@@ -17,18 +19,38 @@ export type FoodType = {
   ingredients: string;
 };
 
-const FoodCard = ({ food }: { food: FoodType }) => {
+export const FoodCard = ({
+  food,
+  getFoods,
+}: {
+  food: FoodType;
+  getFoods: () => void;
+}) => {
+  // DELETE
+  const deleteFood = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/food/${food._id}`);
+      getFoods();
+    } catch (error) {
+      console.error("Delete food error:", error);
+    }
+  };
+
   return (
-    <Card className="mx-auto w-full max-w-[360] max-h-[300]  p-4 gap-2">
-      <div className="relative ">
+    <Card className="mx-auto w-full max-w-[360px] max-h-[320px] p-4 gap-2">
+      <div className="relative">
         <img
           src={food.image}
           alt={food.foodname}
-          className=" w-full object-cover rounded-2xl"
+          className="w-full object-cover rounded-2xl"
           style={{ width: 340, height: 200 }}
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Button>edit</Button>
+        <div className="absolute inset-0 flex items-center justify-center gap-2">
+          <EditFoodDialog food={food} getFoods={getFoods} />
+
+          <Button onClick={deleteFood} className="bg-red-500">
+            delete
+          </Button>
         </div>
       </div>
       <div>
@@ -44,5 +66,3 @@ const FoodCard = ({ food }: { food: FoodType }) => {
     </Card>
   );
 };
-
-export default FoodCard;
