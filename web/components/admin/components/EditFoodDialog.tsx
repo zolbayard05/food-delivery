@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { FoodType } from "./FoodCard";
-import { Pencil, Trash } from "lucide-react";
+import { uploudFile } from "@/lib/uploudFile";
+import { Pencil, Trash, X } from "lucide-react";
 
 export const EditFoodDialog = ({
   food,
@@ -23,6 +24,9 @@ export const EditFoodDialog = ({
   const [foodName, setFoodName] = useState(food.foodname);
   const [price, setPrice] = useState(String(food.price));
   const [ingredients, setIngredients] = useState(food.ingredients);
+  const [file, setFile] = useState<File>();
+  const [imageUrl, setImageUrl] = useState(food.image);
+  const [preview, setPreview] = useState(food.image);
 
   const handleFoodName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -42,14 +46,34 @@ export const EditFoodDialog = ({
     setIngredients(value);
   };
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploudedFile = e.target.files?.[0];
+    if (!uploudedFile) return;
+
+    setFile(uploudedFile);
+    setPreview(URL.createObjectURL(uploudedFile));
+  };
+
+  const removeImage = () => {
+    setFile(undefined);
+    setImageUrl("");
+    setPreview("");
+  };
+
   // PUT
   const updateFood = async () => {
     try {
+      let finalImage = imageUrl;
+
+      if (file) {
+        finalImage = await uploudFile(file);
+      }
+
       await axios.put(`http://localhost:3000/food/${food._id}`, {
         foodName: foodName,
         price: price,
         ingredients: ingredients,
-        image: "",
+        image: finalImage,
       });
 
       getFoods();
@@ -93,6 +117,29 @@ export const EditFoodDialog = ({
         <div>
           <p>Ingredients</p>
           <Input onChange={handleIngredients} type="text" />
+        </div>
+
+        <div>
+          <p>Image</p>
+          {preview ? (
+            <div className="relative w-full">
+              <img
+                src={preview}
+                alt={foodName}
+                className="w-full object-cover rounded-2xl"
+                style={{ height: 140 }}
+              />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-2 right-2 rounded-full bg-white p-1 shadow"
+              >
+                <X size={16} color="red" />
+              </button>
+            </div>
+          ) : (
+            <Input onChange={handleFile} type="file" />
+          )}
         </div>
 
         <DialogClose asChild>

@@ -6,6 +6,7 @@ export const uploudFile = async (file: File) => {
   const blob = await put(file.name, file, {
     access: "public",
     token: blobToken,
+    addRandomSuffix: true,
   });
   return blob.url;
 };
