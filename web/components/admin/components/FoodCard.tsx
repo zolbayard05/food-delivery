@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import axios from "axios";
 import { EditFoodDialog } from "./EditFoodDialog";
 
 export type FoodType = {
@@ -26,39 +24,25 @@ export const FoodCard = ({
   food: FoodType;
   getFoods: () => void;
 }) => {
-  // DELETE
-  const deleteFood = async () => {
-    try {
-      await axios.delete(`http://localhost:3000/food/${food._id}`);
-      getFoods();
-    } catch (error) {
-      console.error("Delete food error:", error);
-    }
-  };
-
   return (
-    <Card className="mx-auto w-full max-w-[360px] max-h-[320px] p-4 gap-2">
-      <div className="relative">
+    <Card className="mx-auto w-full max-w-[280px] max-h-[245px] p-4 ">
+      <div className="relative ">
         <img
           src={food.image}
           alt={food.foodname}
           className="w-full object-cover rounded-2xl"
-          style={{ width: 340, height: 200 }}
+          style={{ width: 250, height: 140 }}
         />
-        <div className="absolute inset-0 flex items-center justify-center gap-2">
+        <div className="absolute inset-0 flex pt-22 pl-48">
           <EditFoodDialog food={food} getFoods={getFoods} />
-
-          <Button onClick={deleteFood} className="bg-red-500">
-            delete
-          </Button>
         </div>
       </div>
       <div>
-        <CardHeader className="flex justify-between">
-          <CardTitle className="text-red-500">{food.foodname}</CardTitle>
+        <CardHeader className="flex justify-between p-0">
+          <CardTitle className="text-red-500 ">{food.foodname}</CardTitle>
           <Badge>${food.price}</Badge>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <CardDescription>{food.ingredients}</CardDescription>
         </CardContent>
         <CardFooter></CardFooter>

@@ -22,11 +22,11 @@ export const FoodSection = ({
     <div className="w-full rounded-xl m-4 p-6 space-y-4 bg-white">
       <h3 className="text-xl font-semibold">{categoryName}</h3>
       <div className="flex gap-4">
-        <CreateFoodDialog
-          categoryId={categoryId}
-          getFoods={getFoods}
-        ></CreateFoodDialog>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <CreateFoodDialog
+            categoryId={categoryId}
+            getFoods={getFoods}
+          ></CreateFoodDialog>
           {filteredFoods.map((food: any) => (
             <FoodCard key={food._id} food={food} getFoods={getFoods} />
           ))}

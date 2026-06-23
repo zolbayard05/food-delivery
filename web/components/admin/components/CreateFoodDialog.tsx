@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { uploudFile } from "@/lib/uploudFile";
 import { Plus } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 export const CreateFoodDialog = ({
   categoryId,
@@ -75,7 +74,7 @@ export const CreateFoodDialog = ({
   };
 
   return (
-    <div className="mx-auto w-full max-w-[360px] max-h-[320px] border rounded-2xl border-red-500 border-dashed p-4 gap-5 flex flex-col items-center justify-center ">
+    <div className="mx-auto w-full max-w-[280px] max-h-[245px] border rounded-2xl border-red-500 border-dashed p-4 gap-5 flex flex-col items-center justify-center ">
       <Dialog>
         <DialogTrigger>
           <Button className="rounded-full bg-red-500 h-10">

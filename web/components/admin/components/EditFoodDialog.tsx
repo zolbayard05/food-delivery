@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { FoodType } from "./FoodCard";
+import { Pencil, Trash } from "lucide-react";
 
 export const EditFoodDialog = ({
   food,
@@ -57,14 +58,26 @@ export const EditFoodDialog = ({
     }
   };
 
+  // DELETE
+  const deleteFood = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/food/${food._id}`);
+      getFoods();
+    } catch (error) {
+      console.error("Delete food error:", error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>edit</Button>
+        <Button className="rounded-full bg-white h-10">
+          <Pencil color="red" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>edit food</DialogTitle>
+          <DialogTitle>Dish info</DialogTitle>
         </DialogHeader>
 
         <div>
@@ -83,7 +96,12 @@ export const EditFoodDialog = ({
         </div>
 
         <DialogClose asChild>
-          <Button onClick={updateFood}>save</Button>
+          <div className="flex justify-between">
+            <Button onClick={deleteFood} className="bg-red-500">
+              <Trash />
+            </Button>
+            <Button onClick={updateFood}>save</Button>
+          </div>
         </DialogClose>
       </DialogContent>
     </Dialog>
