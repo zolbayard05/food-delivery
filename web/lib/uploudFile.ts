@@ -3,10 +3,11 @@ import { put } from "@vercel/blob";
 export const uploudFile = async (file: File) => {
   const blobToken = process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN;
 
-  const blob = await put(file.name, file, {
+  const uniqueNumber = Date.now;
+
+  const blob = await put(`${file.name}-${uniqueNumber}`, file, {
     access: "public",
     token: blobToken,
-    addRandomSuffix: true,
   });
   return blob.url;
 };
