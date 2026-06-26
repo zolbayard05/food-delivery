@@ -7,13 +7,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -35,21 +31,27 @@ const page = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    // Do something with the form values.
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log(data);
-  }
+    await axios.post("http://localhost:3000/user/signin", {
+      email: data.email,
+      password: data.password,
+    });
+  };
 
   return (
     <div className="flex items-center ">
       <div className="flex flex-col justify-center items-center h-screen w-2/5">
-        <div className="w-105 h- flex flex-col ">
+        <div className="w-105 h- flex flex-col gap-4">
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {/* ... */}
             {/* Build the form here */}
             {/* ... */}
           </form>
 
+          <Button className="w-10 bg">
+            <ChevronLeft className="" />
+          </Button>
           <h2 className="font-bold text-2xl">Login</h2>
           <p className="text-muted-foreground">
             Log in ti enjoy your favorite dishes.
@@ -67,7 +69,7 @@ const page = () => {
                       {...field}
                       id="form-rhf-demo-title"
                       aria-invalid={fieldState.invalid}
-                      placeholder="email ee oruul"
+                      placeholder="Enter your email"
                       autoComplete="off"
                     />
                     {fieldState.invalid && (
@@ -81,18 +83,16 @@ const page = () => {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-password">
+                    <FieldLabel htmlFor="form-rhf-demo-title">
                       Password
                     </FieldLabel>
-                    <InputGroup>
-                      <InputGroupTextarea
-                        {...field}
-                        id="form-rhf-demo-description"
-                        placeholder="password oo oruul"
-                        aria-invalid={fieldState.invalid}
-                        autoComplete="off"
-                      />
-                    </InputGroup>
+                    <Input
+                      {...field}
+                      id="form-rhf-demo-title"
+                      placeholder="Password"
+                      aria-invalid={fieldState.invalid}
+                      autoComplete="off"
+                    />
 
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -112,7 +112,7 @@ const page = () => {
               Reset
             </Button>
             <Button type="submit" form="form-rhf-demo">
-              Submit
+              Let's go
             </Button>
           </Field>
         </div>
