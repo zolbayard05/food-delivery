@@ -1,12 +1,13 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { AddCategoryDialog } from "@/components/admin/components/AddCategoryDialog";
 import { FoodSection } from "@/components/admin/components/foodSection";
 import { CategoryItem } from "@/components/admin/components/CategoryItem";
+import { UserContext } from "@/context/UserContext";
 
 type CategoryType = {
   categoryName: string;
@@ -25,6 +26,8 @@ const Page = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [foods, setFoods] = useState<FoodType[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const context = useContext(UserContext);
 
   const getCategories = async () => {
     try {

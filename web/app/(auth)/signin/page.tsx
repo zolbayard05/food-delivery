@@ -7,10 +7,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { UserContext } from "@/context/UserContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
+import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -31,12 +32,11 @@ const page = () => {
     },
   });
 
+  const context = useContext(UserContext);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log(data);
-    await axios.post("http://localhost:3000/user/signin", {
-      email: data.email,
-      password: data.password,
-    });
+    context?.signIn(data.email, data.password);
   };
 
   return (
