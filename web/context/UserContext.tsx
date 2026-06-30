@@ -3,7 +3,6 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useState } from "react";
-import { email } from "zod";
 
 type UserType = {
   email: string;
