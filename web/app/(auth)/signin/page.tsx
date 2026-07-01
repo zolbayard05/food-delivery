@@ -16,7 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
-  email: z.string().email("zun email ee oruulna uu"),
+  email: z.string().email("zuv email ee oruulna uu"),
   password: z
     .string()
     .min(8, "bagadaa 8 orontoi baina.")
