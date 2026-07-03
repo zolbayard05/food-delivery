@@ -17,7 +17,7 @@ export type FoodType = {
   ingredients: string;
 };
 
-export const FoodCard = ({
+export const AdminFoodCard = ({
   food,
   getFoods,
 }: {

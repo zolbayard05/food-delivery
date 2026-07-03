@@ -15,6 +15,7 @@ type UserContextType = {
   signIn: (_email: string, _password: string) => void;
   handleEmail: (_email: string) => void;
   signUp: (_password: string) => void;
+  logout: () => void;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -61,6 +62,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(JSON.parse(user));
   };
 
+  const logout = () => {
+    setUser(undefined);
+    localStorage.removeItem("user");
+  };
+
   const handleEmail = (email: string) => {
     setEmail(email);
   };
@@ -70,7 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, signIn, handleEmail, signUp }}>
+    <UserContext.Provider value={{ user, signIn, handleEmail, signUp, logout }}>
       {children}
     </UserContext.Provider>
   );

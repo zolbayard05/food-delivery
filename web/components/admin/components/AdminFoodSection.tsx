@@ -1,9 +1,9 @@
 "use client";
 
+import { AdminFoodCard } from "./AdminFoodCard";
 import { CreateFoodDialog } from "./CreateFoodDialog";
-import { FoodCard } from "./FoodCard";
 
-export const FoodSection = ({
+export const AdminFoodSection = ({
   categoryName,
   foods,
   categoryId,
@@ -28,7 +28,7 @@ export const FoodSection = ({
             getFoods={getFoods}
           ></CreateFoodDialog>
           {filteredFoods.map((food: any) => (
-            <FoodCard key={food._id} food={food} getFoods={getFoods} />
+            <AdminFoodCard key={food._id} food={food} getFoods={getFoods} />
           ))}
         </div>
       </div>

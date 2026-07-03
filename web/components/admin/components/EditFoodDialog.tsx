@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { FoodType } from "./FoodCard";
+import { FoodType } from "./AdminFoodCard";
 import { uploudFile } from "@/lib/uploudFile";
 import { Pencil, Trash, X } from "lucide-react";
 

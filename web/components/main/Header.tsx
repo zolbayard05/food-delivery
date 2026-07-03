@@ -36,6 +36,13 @@ export const Header = () => {
             </PopoverTrigger>
             <PopoverContent align="start" className="w-40">
               {context.user.email}
+              <Button
+                onClick={context.logout}
+                className="w-fit text-black"
+                variant="secondary"
+              >
+                Sign out
+              </Button>
             </PopoverContent>
           </Popover>
         </div>

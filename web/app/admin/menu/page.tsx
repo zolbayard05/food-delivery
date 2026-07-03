@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { AddCategoryDialog } from "@/components/admin/components/AddCategoryDialog";
-import { FoodSection } from "@/components/admin/components/foodSection";
+import { AdminFoodSection } from "@/components/admin/components/AdminFoodSection";
 import { CategoryItem } from "@/components/admin/components/CategoryItem";
 
 type CategoryType = {
@@ -84,7 +84,7 @@ const Page = () => {
       </div>
 
       {categories?.map((category) => (
-        <FoodSection
+        <AdminFoodSection
           key={category._id}
           getFoods={getFood}
           foods={foods}

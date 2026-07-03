@@ -5,11 +5,12 @@ import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { AddCategoryDialog } from "@/components/admin/components/AddCategoryDialog";
-import { FoodSection } from "@/components/admin/components/foodSection";
+
 import { CategoryItem } from "@/components/admin/components/CategoryItem";
 
 import { Header } from "@/components/main/Header";
 import Image from "next/image";
+import { FoodSection } from "@/components/main/FoodSection";
 
 type CategoryType = {
   categoryName: string;
@@ -62,7 +63,7 @@ export default function Home() {
       <Header />
       <img src="/main.jpg" alt="main" className="w-full h-250 object-cover" />
       <div className="flex justify-center items-center">
-        <div className="h-screen w-full bg-secondary">
+        <div className="h-full w-full bg-neutral-700 flex flex-col gap-5">
           {categories?.map((category) => (
             <FoodSection
               key={category._id}
