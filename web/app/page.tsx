@@ -4,12 +4,8 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { AddCategoryDialog } from "@/components/admin/components/AddCategoryDialog";
-
-import { CategoryItem } from "@/components/admin/components/CategoryItem";
-
 import { Header } from "@/components/main/Header";
-import Image from "next/image";
+
 import { FoodSection } from "@/components/main/FoodSection";
 
 type CategoryType = {

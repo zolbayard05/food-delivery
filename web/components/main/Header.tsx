@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import Link from "next/link";
 import { LocationEdit, ShoppingCart, User2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import CartDrawer from "./CartDrawer";
 
 export const Header = () => {
   const context = useContext(UserContext);
@@ -24,9 +25,8 @@ export const Header = () => {
       {context?.user ? (
         <div className="text-white font-bold text-xl flex gap-3">
           <LocationEdit />
-          <Button className="rounded-full h-14 w-14 bg-[#F4F4F5] hover:bg-[#f4f4f55f] text-foreground cursor-pointer">
-            <ShoppingCart color="black" />
-          </Button>
+
+          <CartDrawer />
 
           <Popover>
             <PopoverTrigger asChild>
