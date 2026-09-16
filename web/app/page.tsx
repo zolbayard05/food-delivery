@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -30,7 +30,7 @@ export default function Home() {
   const getCategories = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/category");
+      const response = await api.get("/category");
       setCategories(response.data.foodCategories);
     } catch (error) {
       console.error("Category fetch error:", error);
@@ -41,7 +41,7 @@ export default function Home() {
 
   const getFood = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/food");
+      const response = await api.get("/food");
       setFoods(response.data.foods);
     } catch (error) {
       console.error("Food fetch error:", error);
