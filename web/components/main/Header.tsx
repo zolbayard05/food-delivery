@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import Link from "next/link";
-import { ClipboardList, User2 } from "lucide-react";
+import { ClipboardList, LayoutDashboard, User2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import CartDrawer from "./CartDrawer";
 
@@ -51,6 +51,19 @@ export const Header = () => {
                 <p className="mb-3 text-xs text-muted-foreground">
                   {context.user.role === "ADMIN" ? "Админ" : "Хэрэглэгч"}
                 </p>
+
+                {context.user.role === "ADMIN" && (
+                  <Link href="/admin/menu">
+                    <Button
+                      className="mb-2 w-full justify-start gap-2"
+                      variant="outline"
+                    >
+                      <LayoutDashboard size={16} />
+                      Admin панел
+                    </Button>
+                  </Link>
+                )}
+
                 <Button
                   onClick={context.logout}
                   className="w-full"
