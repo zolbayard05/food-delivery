@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { AddCategoryDialog } from "@/components/admin/components/AddCategoryDialog";
@@ -19,6 +19,7 @@ type FoodType = {
   price: number;
   image: string;
   ingredients: string;
+  category: string;
 };
 
 const Page = () => {
@@ -56,24 +57,26 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-secondary">
-      <div className="w-full rounded-xl m-4 p-6 space-y-4 bg-white">
-        <h3 className="text-xl font-semibold">Dishes category</h3>
+    <div className="min-h-screen w-full px-4 py-6 sm:px-8">
+      <h1 className="mb-6 text-2xl font-bold">Хоолны цэс удирдах</h1>
 
-        <div className="flex gap-4 flex-wrap">
+      <div className="w-full space-y-4 rounded-2xl border bg-white p-6">
+        <h3 className="text-lg font-semibold">Категори</h3>
+
+        <div className="flex flex-wrap items-center gap-3">
           {loading ? (
             <>
-              <Skeleton className="h-10 w-40" />
-              <Skeleton className="h-10 w-40" />
-              <Skeleton className="h-10 w-40" />
-              <Skeleton className="h-10 w-40" />
-              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-32 rounded-full" />
+              <Skeleton className="h-10 w-32 rounded-full" />
+              <Skeleton className="h-10 w-32 rounded-full" />
+              <Skeleton className="h-10 w-32 rounded-full" />
             </>
           ) : (
             categories.map((category) => (
               <CategoryItem
                 key={category._id}
                 category={category}
+                count={foods.filter((f) => f.category === category._id).length}
                 getCategories={getCategories}
               />
             ))
@@ -83,15 +86,17 @@ const Page = () => {
         </div>
       </div>
 
-      {categories?.map((category) => (
-        <AdminFoodSection
-          key={category._id}
-          getFoods={getFood}
-          foods={foods}
-          categoryName={category.categoryName}
-          categoryId={category._id}
-        />
-      ))}
+      <div className="mt-4 space-y-4">
+        {categories?.map((category) => (
+          <AdminFoodSection
+            key={category._id}
+            getFoods={getFood}
+            foods={foods}
+            categoryName={category.categoryName}
+            categoryId={category._id}
+          />
+        ))}
+      </div>
     </div>
   );
 };

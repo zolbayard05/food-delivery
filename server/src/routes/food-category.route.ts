@@ -5,12 +5,13 @@ import {
   getFoodCategory,
   updateFoodCategory,
 } from "../controllers/food-category.controller.js";
+import { adminMiddleware } from "../middleware/auth.js";
 
 const foodCategoryRoute = new Hono();
 
-foodCategoryRoute.post("/", createFoodCategory);
+foodCategoryRoute.post("/", adminMiddleware, createFoodCategory);
 foodCategoryRoute.get("/", getFoodCategory);
-foodCategoryRoute.put("/:id", updateFoodCategory);
-foodCategoryRoute.delete("/:id", deleteFoodCategory);
+foodCategoryRoute.put("/:id", adminMiddleware, updateFoodCategory);
+foodCategoryRoute.delete("/:id", adminMiddleware, deleteFoodCategory);
 
 export default foodCategoryRoute;

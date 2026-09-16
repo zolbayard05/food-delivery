@@ -1,6 +1,6 @@
 "use client";
 
-import { FoodCard } from "./FoodCard";
+import { FoodCard, FoodType } from "./FoodCard";
 
 export const FoodSection = ({
   categoryName,
@@ -9,24 +9,24 @@ export const FoodSection = ({
   getFoods,
 }: {
   categoryName: string;
-  foods: any;
+  foods: (FoodType & { category: string })[];
   categoryId: string;
   getFoods: () => void;
 }) => {
-  const filteredFoods = foods.filter(
-    (food: any) => food.category === categoryId,
-  );
+  const filteredFoods = foods.filter((food) => food.category === categoryId);
+
+  if (filteredFoods.length === 0) return null;
 
   return (
-    <div className="w-full rounded-xl flex flex-col gap-15 m-10 pl-10 px-10">
-      <h3 className="text-2xl font-semibold text-white">{categoryName}</h3>
-      <div className="flex gap-4">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-4    ">
-          {filteredFoods.map((food: any) => (
-            <FoodCard key={food._id} food={food} getFoods={getFoods} />
-          ))}
-        </div>
+    <section id={`category-${categoryId}`} className="scroll-mt-40 py-8">
+      <h2 className="mb-5 text-2xl font-bold capitalize text-foreground">
+        {categoryName}
+      </h2>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+        {filteredFoods.map((food) => (
+          <FoodCard key={food._id} food={food} getFoods={getFoods} />
+        ))}
       </div>
-    </div>
+    </section>
   );
 };

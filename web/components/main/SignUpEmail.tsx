@@ -27,39 +27,30 @@ export const SignUpEmail = ({ handleStep }: { handleStep: () => void }) => {
   };
 
   return (
-    <div className="w-105 h- flex flex-col gap-2">
-      <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-        <FieldGroup>
-          <Controller
-            name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-rhf-demo-title">Email</FieldLabel>
-                <Input
-                  {...field}
-                  id="form-rhf-demo-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Enter your email"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-        </FieldGroup>
-      </form>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-1">
+      <FieldGroup>
+        <Controller
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="signup-email">Имэйл</FieldLabel>
+              <Input
+                {...field}
+                id="signup-email"
+                aria-invalid={fieldState.invalid}
+                placeholder="name@example.com"
+                autoComplete="email"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
 
-      <Field orientation="horizontal">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Reset
-        </Button>
-        <Button type="submit" form="form-rhf-demo">
-          Let's go
-        </Button>
-      </Field>
-    </div>
+      <Button type="submit" className="mt-4 w-full bg-red-500 hover:bg-red-600">
+        Үргэлжлүүлэх
+      </Button>
+    </form>
   );
 };

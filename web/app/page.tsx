@@ -1,11 +1,11 @@
 "use client";
 
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { Header } from "@/components/main/Header";
-
+import { CategoryNav } from "@/components/main/CategoryNav";
 import { FoodSection } from "@/components/main/FoodSection";
 
 type CategoryType = {
@@ -19,6 +19,7 @@ type FoodType = {
   price: number;
   image: string;
   ingredients: string;
+  category: string;
 };
 
 export default function Home() {
@@ -54,23 +55,40 @@ export default function Home() {
   useEffect(() => {
     getCategories();
   }, []);
+
   return (
-    <div>
+    <div className="min-h-screen bg-white">
       <Header />
-      <img src="/main.jpg" alt="main" className="w-full h-250 object-cover" />
-      <div className="flex justify-center items-center">
-        <div className="h-full w-full bg-neutral-700 flex flex-col gap-5">
-          {categories?.map((category) => (
-            <FoodSection
-              key={category._id}
-              getFoods={getFood}
-              foods={foods}
-              categoryName={category.categoryName}
-              categoryId={category._id}
-            />
+
+      <div className="relative h-[220px] w-full overflow-hidden sm:h-[320px] lg:h-[400px]">
+        <img
+          src="/main.jpg"
+          alt="NomNom"
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {loading ? (
+        <div className="mx-auto flex max-w-7xl gap-2 px-4 py-4 sm:px-8 lg:px-12">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-9 w-28 shrink-0 rounded-full" />
           ))}
         </div>
-      </div>
+      ) : (
+        <CategoryNav categories={categories} />
+      )}
+
+      <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-8 lg:px-12">
+        {categories?.map((category) => (
+          <FoodSection
+            key={category._id}
+            getFoods={getFood}
+            foods={foods}
+            categoryName={category.categoryName}
+            categoryId={category._id}
+          />
+        ))}
+      </main>
     </div>
   );
 }

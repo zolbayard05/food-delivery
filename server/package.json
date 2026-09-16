@@ -5,10 +5,13 @@
     "axios": "^1.18.1",
     "bcryptjs": "^3.0.3",
     "hono": "^4.12.25",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.3.0",
-    "mongoose": "^8.24.1"
+    "mongoose": "^8.24.1",
+    "resend": "^6.28.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { FoodType } from "./AdminFoodCard";
 import { uploudFile } from "@/lib/uploudFile";
 import { Pencil, Trash, X } from "lucide-react";
@@ -27,6 +27,7 @@ export const EditFoodDialog = ({
   const [file, setFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState(food.image);
   const [preview, setPreview] = useState(food.image);
+  const [saving, setSaving] = useState(false);
 
   const handleFoodName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -63,13 +64,14 @@ export const EditFoodDialog = ({
   // PUT
   const updateFood = async () => {
     try {
+      setSaving(true);
       let finalImage = imageUrl;
 
       if (file) {
         finalImage = await uploudFile(file);
       }
 
-      await axios.put(`http://localhost:3000/food/${food._id}`, {
+      await api.put(`/food/${food._id}`, {
         foodName: foodName,
         price: price,
         ingredients: ingredients,
@@ -79,13 +81,15 @@ export const EditFoodDialog = ({
       getFoods();
     } catch (error) {
       console.error("Update food error:", error);
+    } finally {
+      setSaving(false);
     }
   };
 
   // DELETE
   const deleteFood = async () => {
     try {
-      await axios.delete(`http://localhost:3000/food/${food._id}`);
+      await api.delete(`/food/${food._id}`);
       getFoods();
     } catch (error) {
       console.error("Delete food error:", error);
@@ -95,59 +99,71 @@ export const EditFoodDialog = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="rounded-full bg-white h-10">
-          <Pencil color="red" />
+        <Button className="h-9 w-9 rounded-full bg-white p-0 shadow-md hover:bg-white cursor-pointer">
+          <Pencil size={15} color="red" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Dish info</DialogTitle>
+          <DialogTitle>Хоолны мэдээлэл</DialogTitle>
         </DialogHeader>
 
-        <div>
-          <p>Food name</p>
-          <Input onChange={handleFoodName} type="text" />
-        </div>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Хоолны нэр</p>
+            <Input value={foodName} onChange={handleFoodName} type="text" />
+          </div>
 
-        <div>
-          <p>Price</p>
-          <Input onChange={handlePrice} type="number" />
-        </div>
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Үнэ</p>
+            <Input value={price} onChange={handlePrice} type="number" />
+          </div>
 
-        <div>
-          <p>Ingredients</p>
-          <Input onChange={handleIngredients} type="text" />
-        </div>
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Орц</p>
+            <Input value={ingredients} onChange={handleIngredients} type="text" />
+          </div>
 
-        <div>
-          <p>Image</p>
-          {preview ? (
-            <div className="relative w-full">
-              <img
-                src={preview}
-                alt={foodName}
-                className="w-full object-cover rounded-2xl"
-                style={{ height: 140 }}
-              />
-              <button
-                type="button"
-                onClick={removeImage}
-                className="absolute top-2 right-2 rounded-full bg-white p-1 shadow"
-              >
-                <X size={16} color="red" />
-              </button>
-            </div>
-          ) : (
-            <Input onChange={handleFile} type="file" />
-          )}
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Зураг</p>
+            {preview ? (
+              <div className="relative w-full">
+                <img
+                  src={preview}
+                  alt={foodName}
+                  className="w-full rounded-2xl object-cover"
+                  style={{ height: 140 }}
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute right-2 top-2 rounded-full bg-white p-1 shadow"
+                >
+                  <X size={16} color="red" />
+                </button>
+              </div>
+            ) : (
+              <Input onChange={handleFile} type="file" />
+            )}
+          </div>
         </div>
 
         <DialogClose asChild>
-          <div className="flex justify-between">
-            <Button onClick={deleteFood} className="bg-red-500">
-              <Trash />
+          <div className="flex justify-between pt-2">
+            <Button
+              onClick={deleteFood}
+              variant="outline"
+              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+            >
+              <Trash size={16} className="mr-1" /> Устгах
             </Button>
-            <Button onClick={updateFood}>save</Button>
+            <Button
+              onClick={updateFood}
+              disabled={saving}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              {saving ? "Хадгалж байна..." : "Хадгалах"}
+            </Button>
           </div>
         </DialogClose>
       </DialogContent>

@@ -6,12 +6,19 @@ const UserSchema = new Schema(
     password: String,
     phoneNumber: String,
     address: String,
-    isVerified: Boolean,
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ["ADMIN", "USER"],
       default: "USER",
     },
+    verificationToken: String,
+    verificationTokenExpiry: Date,
+    resetPasswordToken: String,
+    resetPasswordExpiry: Date,
   },
   { timestamps: true },
 );

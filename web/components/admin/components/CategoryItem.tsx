@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,9 +20,11 @@ type CategoryType = {
 
 export const CategoryItem = ({
   category,
+  count,
   getCategories,
 }: {
   category: CategoryType;
+  count: number;
   getCategories: () => void;
 }) => {
   const [value, setValue] = useState(category.categoryName);
@@ -30,7 +32,7 @@ export const CategoryItem = ({
   // PUT
   const updateCategory = async () => {
     try {
-      await axios.put(`http://localhost:3000/category/${category._id}`, {
+      await api.put(`/category/${category._id}`, {
         categoryName: value,
       });
       getCategories();
@@ -42,7 +44,7 @@ export const CategoryItem = ({
   // DELETE
   const deleteCategory = async () => {
     try {
-      await axios.delete(`http://localhost:3000/category/${category._id}`);
+      await api.delete(`/category/${category._id}`);
       getCategories();
     } catch (error) {
       console.error("Delete category error:", error);
@@ -50,33 +52,35 @@ export const CategoryItem = ({
   };
 
   return (
-    <div className="rounded-full py-2 px-4 border flex items-center gap-2">
+    <div className="flex items-center gap-2 rounded-full border bg-white py-2 pl-4 pr-2 capitalize">
       {category.categoryName}
-      <Badge className="ml-1">5</Badge>
+      <Badge className="bg-secondary text-secondary-foreground">{count}</Badge>
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="h-6 w-6 p-0">
-            <Pencil className="h-4 w-4" />
+          <Button variant="ghost" className="h-7 w-7 rounded-full p-0">
+            <Pencil className="h-3.5 w-3.5" />
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit category</DialogTitle>
+            <DialogTitle>Категори засах</DialogTitle>
           </DialogHeader>
           <Input value={value} onChange={(e) => setValue(e.target.value)} />
           <DialogClose asChild>
-            <Button onClick={updateCategory}>Save</Button>
+            <Button onClick={updateCategory} className="bg-red-500 hover:bg-red-600">
+              Хадгалах
+            </Button>
           </DialogClose>
         </DialogContent>
       </Dialog>
 
       <Button
         variant="ghost"
-        className="h-6 w-6 p-0 text-red-500"
+        className="h-7 w-7 rounded-full p-0 text-red-500 hover:text-red-600"
         onClick={deleteCategory}
       >
-        <Trash className="h-4 w-4" />
+        <Trash className="h-3.5 w-3.5" />
       </Button>
     </div>
   );

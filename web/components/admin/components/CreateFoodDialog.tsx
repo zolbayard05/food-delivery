@@ -3,16 +3,16 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { uploudFile } from "@/lib/uploudFile";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export const CreateFoodDialog = ({
   categoryId,
@@ -25,6 +25,7 @@ export const CreateFoodDialog = ({
   const [price, setPrice] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [file, setFile] = useState<File>();
+  const [saving, setSaving] = useState(false);
 
   const handleFoodName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -44,8 +45,9 @@ export const CreateFoodDialog = ({
     setIngredients(value);
   };
 
-  const handleFile = (e: any) => {
-    const uploudedFile = e.target.files[0];
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploudedFile = e.target.files?.[0];
+    if (!uploudedFile) return;
 
     setFile(uploudedFile);
   };
@@ -53,13 +55,14 @@ export const CreateFoodDialog = ({
   const createFood = async () => {
     try {
       if (!file) {
-        console.log("zuragaa oruulna uu");
+        toast.error("Зургаа оруулна уу");
         return;
       }
 
+      setSaving(true);
       const imageUrl = await uploudFile(file);
 
-      await axios.post("http://localhost:3000/food", {
+      await api.post("/food", {
         foodName: foodName,
         price: price,
         ingredients: ingredients,
@@ -70,48 +73,59 @@ export const CreateFoodDialog = ({
       getFoods();
     } catch (error) {
       console.error("Create food error:", error);
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <div className="mx-auto w-full max-w-[280px] max-h-[245px] border rounded-2xl border-red-500 border-dashed p-4 gap-5 flex flex-col items-center justify-center ">
-      <Dialog>
-        <DialogTrigger>
-          <Button className="rounded-full bg-red-500 h-10">
-            <Plus />
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-red-300 text-muted-foreground transition-colors hover:border-red-500 hover:text-red-500 cursor-pointer">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white">
+            <Plus size={18} />
+          </span>
+          <span className="text-sm font-medium">Шинэ хоол нэмэх</span>
+        </button>
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Шинэ хоол нэмэх</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Хоолны нэр</p>
+            <Input onChange={handleFoodName} type="text" />
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Үнэ</p>
+            <Input onChange={handlePrice} type="number" />
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Орц</p>
+            <Input onChange={handleIngredients} type="text" />
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Зураг</p>
+            <Input onChange={handleFile} type="file" />
+          </div>
+        </div>
+
+        <DialogClose asChild>
+          <Button
+            onClick={createFood}
+            disabled={saving}
+            className="w-full bg-red-500 hover:bg-red-600"
+          >
+            {saving ? "Нэмж байна..." : "Нэмэх"}
           </Button>
-        </DialogTrigger>
-
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>create food</DialogTitle>
-          </DialogHeader>
-          <div>
-            <p>Food name</p>
-            <Input onChange={handleFoodName} type="text"></Input>
-          </div>
-
-          <div>
-            <p>Price</p>
-            <Input onChange={handlePrice} type="number"></Input>
-          </div>
-
-          <div>
-            <p>Ingridients</p>
-            <Input onChange={handleIngredients} type="text"></Input>
-          </div>
-
-          <div>
-            <p>Image</p>
-            <Input onChange={handleFile} type="file"></Input>
-          </div>
-
-          <DialogClose asChild>
-            <Button onClick={createFood}>add</Button>
-          </DialogClose>
-        </DialogContent>
-      </Dialog>
-      <p>Add new food</p>
-    </div>
+        </DialogClose>
+      </DialogContent>
+    </Dialog>
   );
 };

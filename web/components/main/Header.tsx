@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import Link from "next/link";
-import { LocationEdit, ShoppingCart, User2 } from "lucide-react";
+import { ClipboardList, User2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import CartDrawer from "./CartDrawer";
 
@@ -12,54 +12,70 @@ export const Header = () => {
   const context = useContext(UserContext);
 
   return (
-    <div className="w-full h-25 bg-[#18181B] flex justify-between items-center py-3 px-28">
-      <div>
-        <Image
-          src="/Logo=Horizon.jpg"
-          alt="Main-logo"
-          width={180}
-          height={60}
-        />
-      </div>
+    <header className="sticky top-0 z-40 w-full bg-[#18181B]">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-8 lg:px-12">
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/Logo=Horizon.jpg"
+            alt="NomNom"
+            width={150}
+            height={50}
+            className="h-10 w-auto object-contain"
+          />
+        </Link>
 
-      {context?.user ? (
-        <div className="text-white font-bold text-xl flex gap-3">
-          <LocationEdit />
-
-          <CartDrawer />
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className="rounded-full h-14 w-14 bg-red-500 hover:bg-red-700 cursor-pointer">
-                <User2 size={32} />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="w-40">
-              {context.user.email}
+        {context?.user ? (
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/orders">
               <Button
-                onClick={context.logout}
-                className="w-fit text-black"
-                variant="secondary"
+                variant="ghost"
+                className="h-11 w-11 rounded-full bg-[#F4F4F5] p-0 hover:bg-[#e4e4e7] cursor-pointer"
+                title="Миний захиалгууд"
               >
-                Sign out
+                <ClipboardList className="text-[#18181B]" size={20} />
               </Button>
-            </PopoverContent>
-          </Popover>
-        </div>
-      ) : (
-        <div className="flex gap-4">
-          <Link href="/signup">
-            <Button className="bg-[#F4F4F5] hover:bg-[#f4f4f55f] text-foreground cursor-pointer">
-              Sign up
-            </Button>
-          </Link>
-          <Link href="/signin">
-            <Button className="bg-red-500 hover:bg-red-700 cursor-pointer">
-              Sign in
-            </Button>
-          </Link>
-        </div>
-      )}
-    </div>
+            </Link>
+
+            <CartDrawer />
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button className="h-11 w-11 rounded-full bg-red-500 p-0 hover:bg-red-600 cursor-pointer">
+                  <User2 size={20} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56">
+                <p className="truncate text-sm font-medium">
+                  {context.user.email}
+                </p>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  {context.user.role === "ADMIN" ? "Админ" : "Хэрэглэгч"}
+                </p>
+                <Button
+                  onClick={context.logout}
+                  className="w-full"
+                  variant="secondary"
+                >
+                  Гарах
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </div>
+        ) : (
+          <div className="flex gap-2 sm:gap-3">
+            <Link href="/signup">
+              <Button className="bg-[#F4F4F5] text-[#18181B] hover:bg-[#e4e4e7] cursor-pointer">
+                Бүртгүүлэх
+              </Button>
+            </Link>
+            <Link href="/signin">
+              <Button className="bg-red-500 hover:bg-red-600 cursor-pointer">
+                Нэвтрэх
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };

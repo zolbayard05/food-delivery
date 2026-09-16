@@ -1,12 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { EditFoodDialog } from "./EditFoodDialog";
 
 export type FoodType = {
@@ -25,28 +16,30 @@ export const AdminFoodCard = ({
   getFoods: () => void;
 }) => {
   return (
-    <Card className="mx-auto w-full max-w-[280px] max-h-[245px] p-4 ">
-      <div className="relative ">
+    <div className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md">
+      <div className="relative aspect-4/3 overflow-hidden bg-secondary">
         <img
           src={food.image}
           alt={food.foodname}
-          className="w-full object-cover rounded-2xl"
-          style={{ width: 250, height: 140 }}
+          className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 flex pt-22 pl-48">
+        <div className="absolute right-2 top-2">
           <EditFoodDialog food={food} getFoods={getFoods} />
         </div>
       </div>
-      <div>
-        <CardHeader className="flex justify-between p-0">
-          <CardTitle className="text-red-500 ">{food.foodname}</CardTitle>
-          <Badge>${food.price}</Badge>
-        </CardHeader>
-        <CardContent className="p-0">
-          <CardDescription>{food.ingredients}</CardDescription>
-        </CardContent>
-        <CardFooter></CardFooter>
+      <div className="p-3">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="font-semibold text-red-500 line-clamp-1">
+            {food.foodname}
+          </h4>
+          <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold">
+            ${food.price}
+          </span>
+        </div>
+        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+          {food.ingredients}
+        </p>
       </div>
-    </Card>
+    </div>
   );
 };

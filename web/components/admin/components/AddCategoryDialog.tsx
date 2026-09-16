@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export const AddCategoryDialog = ({
   };
 
   const addNewCategory = async () => {
-    await axios.post("http://localhost:3000/category", {
+    await api.post("/category", {
       categoryName: value,
     });
 
@@ -34,18 +34,22 @@ export const AddCategoryDialog = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="rounded-full bg-red-500 h-10">
-          <Plus />
+        <Button className="h-10 w-10 rounded-full bg-red-500 p-0 hover:bg-red-600 cursor-pointer">
+          <Plus size={18} />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new category</DialogTitle>
+          <DialogTitle>Шинэ категори нэмэх</DialogTitle>
         </DialogHeader>
-        <h3>Category name</h3>
-        <Input onChange={handleChange} placeholder="type category name ..." />
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Категорийн нэр</p>
+          <Input onChange={handleChange} placeholder="жишээ нь: Salads" />
+        </div>
         <DialogClose asChild>
-          <Button onClick={addNewCategory}>Add category</Button>
+          <Button onClick={addNewCategory} className="w-full bg-red-500 hover:bg-red-600">
+            Нэмэх
+          </Button>
         </DialogClose>
       </DialogContent>
     </Dialog>

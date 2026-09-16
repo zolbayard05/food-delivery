@@ -1,12 +1,10 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
+
+import { CartContext } from "@/context/CartContext";
+import { Button } from "../ui/button";
+import { Plus } from "lucide-react";
+import { useContext } from "react";
+import { toast } from "sonner";
 
 export type FoodType = {
   foodname: string;
@@ -22,27 +20,46 @@ export const FoodCard = ({
   food: FoodType;
   getFoods: () => void;
 }) => {
+  const cart = useContext(CartContext);
+
+  const handleAddToCart = () => {
+    cart?.addToCart({
+      _id: food._id,
+      foodname: food.foodname,
+      price: food.price,
+      image: food.image,
+    });
+    toast.success(`${food.foodname} сагсанд нэмэгдлээ`);
+  };
+
   return (
-    <Card className="mx-auto w-full max-w-[380px] max-h-[345px] p-4 ">
-      <div className="relative ">
+    <div className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-lg">
+      <div className="relative aspect-4/3 overflow-hidden bg-secondary">
         <img
           src={food.image}
           alt={food.foodname}
-          className="w-full object-cover rounded-2xl"
-          style={{ width: 340, height: 200 }}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute inset-0 flex pt-22 pl-48"></div>
+        <Button
+          onClick={handleAddToCart}
+          className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-red-500 p-0 shadow-md hover:bg-red-600 cursor-pointer"
+        >
+          <Plus size={18} />
+        </Button>
       </div>
-      <div>
-        <CardHeader className="flex justify-between p-0">
-          <CardTitle className="text-red-500 ">{food.foodname}</CardTitle>
-          <Badge>${food.price}</Badge>
-        </CardHeader>
-        <CardContent className="p-0">
-          <CardDescription>{food.ingredients}</CardDescription>
-        </CardContent>
-        <CardFooter></CardFooter>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-semibold text-foreground line-clamp-1">
+            {food.foodname}
+          </h3>
+          <span className="shrink-0 font-bold text-red-500">
+            ${food.price}
+          </span>
+        </div>
+        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+          {food.ingredients}
+        </p>
       </div>
-    </Card>
+    </div>
   );
 };

@@ -9,10 +9,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { UserContext } from "@/context/UserContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft } from "lucide-react";
-import Image from "next/image";
-import { useContext } from "react";
+import Link from "next/link";
+import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -23,7 +23,9 @@ const formSchema = z.object({
     .max(12, "ihdee 12 orontoi baina."),
 });
 
-const page = () => {
+const Page = () => {
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,98 +37,97 @@ const page = () => {
   const context = useContext(UserContext);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    context?.signIn(data.email, data.password);
+    setLoading(true);
+    const error = await context?.signIn(data.email, data.password);
+    setLoading(false);
+    if (error) {
+      toast.error(error);
+    }
   };
 
   return (
-    <div className="flex items-center ">
-      <div className="flex flex-col justify-center items-center h-screen w-2/5">
-        <div className="w-105 h- flex flex-col gap-4">
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            {/* ... */}
-            {/* Build the form here */}
-            {/* ... */}
-          </form>
+    <div className="flex flex-col gap-2">
+      <h2 className="text-3xl font-bold tracking-tight">Тавтай морил</h2>
+      <p className="text-muted-foreground mb-6">
+        Дуртай хоолондоо нэвтрэн орж захиалаарай.
+      </p>
 
-          <Button className="w-10 bg">
-            <ChevronLeft className="" />
-          </Button>
-          <h2 className="font-bold text-2xl">Login</h2>
-          <p className="text-muted-foreground">
-            Log in ti enjoy your favorite dishes.
-          </p>
-
-          <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-            <FieldGroup>
-              <Controller
-                name="email"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">Email</FieldLabel>
-                    <Input
-                      {...field}
-                      id="form-rhf-demo-title"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter your email"
-                      autoComplete="off"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
+      <form
+        id="signin-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-1"
+      >
+        <FieldGroup>
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="signin-email">Имэйл</FieldLabel>
+                <Input
+                  {...field}
+                  id="signin-email"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
                 )}
-              />
-              <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
-                      Password
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="form-rhf-demo-title"
-                      placeholder="Password"
-                      aria-invalid={fieldState.invalid}
-                      autoComplete="off"
-                    />
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
+              </Field>
+            )}
+          />
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="signin-password">Нууц үг</FieldLabel>
+                <Input
+                  {...field}
+                  id="signin-password"
+                  type="password"
+                  placeholder="••••••••"
+                  aria-invalid={fieldState.invalid}
+                  autoComplete="current-password"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
                 )}
-              />
-            </FieldGroup>
-          </form>
+              </Field>
+            )}
+          />
+        </FieldGroup>
 
-          <Field orientation="horizontal">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-            >
-              Reset
-            </Button>
-            <Button type="submit" form="form-rhf-demo">
-              Let's go
-            </Button>
-          </Field>
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4"
+          >
+            Нууц үгээ мартсан уу?
+          </Link>
         </div>
-      </div>
-      <div className="flex h-screen max-w-3/5 p-5">
-        <Image
-          src="/food-delivery-hero.jpg"
-          alt="heroImage"
-          width={1200}
-          height={1000}
-          className="rounded-2xl object-cover"
-        ></Image>
-      </div>
+
+        <Button
+          type="submit"
+          form="signin-form"
+          disabled={loading}
+          className="mt-4 w-full bg-red-500 hover:bg-red-600"
+        >
+          {loading ? "Нэвтэрч байна..." : "Нэвтрэх"}
+        </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Бүртгэлгүй юу?{" "}
+        <Link
+          href="/signup"
+          className="font-medium text-red-500 hover:text-red-600 underline underline-offset-4"
+        >
+          Бүртгүүлэх
+        </Link>
+      </p>
     </div>
   );
 };
-export default page;
+export default Page;

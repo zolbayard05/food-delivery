@@ -4,8 +4,10 @@ import z from "zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "@/components/ui/button";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
+import { toast } from "sonner";
+import { ChevronLeft } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -27,8 +29,9 @@ const formSchema = z
     }
   });
 
-export const SignUpPassword = () => {
+export const SignUpPassword = ({ onBack }: { onBack: () => void }) => {
   const context = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,64 +41,76 @@ export const SignUpPassword = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    context?.signUp(data.password);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    const error = await context?.signUp(data.password);
+    setLoading(false);
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success("Имэйлээ шалгаад бүртгэлээ баталгаажуулна уу");
+    }
   };
 
   return (
-    <div className="w-105 h- flex flex-col gap-2">
-      <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-        <FieldGroup>
-          <Controller
-            name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-rhf-demo-title">Password</FieldLabel>
-                <Input
-                  {...field}
-                  id="form-rhf-demo-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Enter your password"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-1">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-1 flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ChevronLeft size={16} /> Буцах
+      </button>
 
-          <Controller
-            name="confirmPassword"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-rhf-demo-title">Confirm</FieldLabel>
-                <Input
-                  {...field}
-                  id="form-rhf-demo-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Confirm your password"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-        </FieldGroup>
-      </form>
+      <FieldGroup>
+        <Controller
+          name="password"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="signup-password">Нууц үг</FieldLabel>
+              <Input
+                {...field}
+                id="signup-password"
+                type="password"
+                aria-invalid={fieldState.invalid}
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
-      <Field orientation="horizontal">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Reset
-        </Button>
-        <Button type="submit" form="form-rhf-demo">
-          Let's go
-        </Button>
-      </Field>
-    </div>
+        <Controller
+          name="confirmPassword"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="signup-confirm-password">
+                Нууц үг давтах
+              </FieldLabel>
+              <Input
+                {...field}
+                id="signup-confirm-password"
+                type="password"
+                aria-invalid={fieldState.invalid}
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="mt-4 w-full bg-red-500 hover:bg-red-600"
+      >
+        {loading ? "Бүртгэж байна..." : "Бүртгүүлэх"}
+      </Button>
+    </form>
   );
 };

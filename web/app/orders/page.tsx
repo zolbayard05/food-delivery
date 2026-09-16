@@ -1,10 +1,12 @@
 "use client";
 
-import { api } from "@/lib/api";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+import { Header } from "@/components/main/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { UserContext } from "@/context/UserContext";
+import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 type FoodOrderItem = {
   food: {
@@ -18,12 +20,8 @@ type FoodOrderItem = {
 
 type OrderType = {
   _id: string;
-  user: {
-    email: string;
-    phoneNumber: string;
-    address: string;
-  };
   totalPrice: number;
+  deliveryAddress: string;
   foodOrderItems: FoodOrderItem[];
   status: "PENDING" | "CANCELED" | "DELIVERED";
   createdAt: string;
@@ -35,12 +33,6 @@ const STATUS_STYLES: Record<OrderType["status"], string> = {
   CANCELED: "bg-red-100 text-red-600 border-red-300",
 };
 
-const STATUS_OPTIONS: OrderType["status"][] = [
-  "PENDING",
-  "DELIVERED",
-  "CANCELED",
-];
-
 const STATUS_LABEL: Record<OrderType["status"], string> = {
   PENDING: "Хүлээгдэж байна",
   DELIVERED: "Хүргэгдсэн",
@@ -48,44 +40,42 @@ const STATUS_LABEL: Record<OrderType["status"], string> = {
 };
 
 const Page = () => {
+  const context = useContext(UserContext);
+  const router = useRouter();
   const [orders, setOrders] = useState<OrderType[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const getOrders = async () => {
+  const getMyOrders = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/order");
+      const response = await api.get("/order/my");
       setOrders(response.data.orders);
     } catch (error) {
-      console.error("Order fetch error:", error);
+      console.error("My orders fetch error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateStatus = async (id: string, status: OrderType["status"]) => {
-    try {
-      await api.put(`/order/${id}`, { status });
-      setOrders((prev) =>
-        prev.map((o) => (o._id === id ? { ...o, status } : o)),
-      );
-    } catch (error) {
-      console.error("aldaa garlaa:", error);
-    }
-  };
-
   useEffect(() => {
-    getOrders();
-  }, []);
+    if (context && context.user === undefined) {
+      const stored = localStorage.getItem("user");
+      if (!stored) {
+        router.push("/signin");
+        return;
+      }
+    }
+    getMyOrders();
+  }, [context?.user]);
 
   return (
-    <div className="min-h-screen w-full px-4 py-6 sm:px-8">
-      <h1 className="mb-6 text-2xl font-bold">Захиалгууд</h1>
+    <div>
+      <Header />
+      <div className="max-w-3xl mx-auto p-6 space-y-4">
+        <h2 className="text-2xl font-bold">Миний захиалгууд</h2>
 
-      <div className="w-full space-y-4 rounded-2xl border bg-white p-6">
         {loading ? (
           <div className="flex flex-col gap-4">
-            <Skeleton className="h-28 w-full" />
             <Skeleton className="h-28 w-full" />
             <Skeleton className="h-28 w-full" />
           </div>
@@ -98,40 +88,20 @@ const Page = () => {
             {orders.map((order) => (
               <Card key={order._id} className="border shadow-sm">
                 <CardHeader className="flex flex-row items-start justify-between pb-2 gap-4">
-                  {/* Left: user + meta */}
                   <div className="space-y-0.5">
                     <CardTitle className="text-base font-semibold">
-                      {order.user?.email ?? "Unknown user"}
+                      {new Date(order.createdAt).toLocaleString()}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      {order.user?.phoneNumber}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {order.user?.address}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(order.createdAt).toLocaleString()}
+                      {order.deliveryAddress}
                     </p>
                   </div>
-
-                  {/* Right: status selector + total */}
                   <div className="flex flex-col items-end gap-2">
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        updateStatus(
-                          order._id,
-                          e.target.value as OrderType["status"],
-                        )
-                      }
-                      className={`text-xs font-medium rounded-full border px-3 py-1 cursor-pointer outline-none ${STATUS_STYLES[order.status]}`}
+                    <span
+                      className={`text-xs font-medium rounded-full border px-3 py-1 ${STATUS_STYLES[order.status]}`}
                     >
-                      {STATUS_OPTIONS.map((s) => (
-                        <option key={s} value={s}>
-                          {STATUS_LABEL[s]}
-                        </option>
-                      ))}
-                    </select>
+                      {STATUS_LABEL[order.status]}
+                    </span>
                     <span className="text-sm font-bold text-red-500">
                       ${order.totalPrice}
                     </span>

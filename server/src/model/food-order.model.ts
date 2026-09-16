@@ -22,8 +22,12 @@ const FoodOrderSchema = new Schema(
       type: Number,
       required: true,
     },
-    foodOrderItem: {
+    foodOrderItems: {
       type: [FoodOrderItemSchema],
+      required: true,
+    },
+    deliveryAddress: {
+      type: String,
       required: true,
     },
     status: {
